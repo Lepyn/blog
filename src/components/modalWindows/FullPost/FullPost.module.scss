@@ -1,0 +1,81 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 24px auto 0px auto;
+  height: 870px;
+  padding: 15px;
+  width: 941px;
+  background: white;
+}
+
+.mainContainer {
+  display: flex;
+}
+
+.postInfo {
+  width: 701px;
+}
+.shortDescription {
+  font-size: 12px;
+}
+
+.tag {
+  margin-top: 7px;
+  margin-bottom: 7px;
+  border: 1px solid black;
+  height: 20px;
+  width: 38px;
+  border-radius: 2px;
+  display: flex;
+  justify-content: center;
+}
+
+.postArticle {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 213px;
+
+  .title {
+    color: #1890ff;
+    margin: 0px 0px 4px 0px;
+    padding: 0px;
+    font-size: 20px;
+  }
+  .like {
+    background-image: url('../../../img/like.png');
+
+    border: none;
+    margin: 0px 0px 2px 13px;
+    height: 15px;
+    width: 16px;
+    border-radius: 0px;
+  }
+  .countLike {
+    margin: 3px 0px 0px 5px;
+    height: 22px;
+    width: 13px;
+  }
+}
+
+.userInfo {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: 70px;
+
+  .userName {
+    font-weight: 600;
+  }
+
+  .datePost {
+    color: gray;
+  }
+
+  .userAvatar {
+    margin-right: 12px;
+    background: url('../../../img/avatar.png') no-repeat center;
+    height: 46px;
+    width: 48px;
+  }
+}
