@@ -24,3 +24,16 @@ export const getFullArticle = async () => {
   console.log(response.data)
   return response.data
 }
+
+export const getNewArticle = async (isValidData) => {
+  const token = localStorage.getItem('token')
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  }
+  const response = await instance.post('/articles', isValidData, { headers })
+  if (response.status >= 400) {
+    throw new Error('ошибка обработки данных')
+  }
+  return response.data
+}

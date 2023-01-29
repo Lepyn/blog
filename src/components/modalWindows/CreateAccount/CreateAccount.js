@@ -41,9 +41,6 @@ const CreateAccount = () => {
     reset()
   }, [isReg])
 
-  console.log(status)
-  console.log(error)
-
   return (
     <div className={styles.wrapper}>
       <div className={styles.title}>
@@ -123,7 +120,7 @@ const CreateAccount = () => {
           <span className={styles.description}> I agree to the processing of my personal information</span>
           <div className={styles.error}>{errors?.chekk && <p>{errors?.chekk?.message || 'Error!'}</p>}</div>
         </label>
-        {/* {!isRejectedWithValue ? <alert>ПОШЕЛ НАХУЙ</alert> : ''} */}
+        {status === 'rejected' ? <div className={styles.errorr}>{error}</div> : ''}
         <button type="submit" className={styles.createBtn}>
           Create
         </button>

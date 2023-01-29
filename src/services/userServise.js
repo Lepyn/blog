@@ -11,9 +11,6 @@ export const getUserRegistration = async (isValidData, rejectWithValue) => {
   } catch (error) {
     console.log(error.response.status)
     if (error.response && error.response.status === 422) {
-      // return <alert>ГОВНО НАХУЙ</alert>
-      return rejectWithValue('Пользователь уже существует с такими же данными')
-    } else {
       throw error
     }
   }

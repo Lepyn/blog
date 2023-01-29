@@ -25,7 +25,9 @@ const Layout = () => {
           </div>
         ) : (
           <div className={styles.containerProfile}>
-            <button className={styles.createArticle}>createArticle</button>
+            <Link to="new-article" className={styles.createArticle}>
+              create Article
+            </Link>
             <Link to="/profile" className={styles.headerAuth}>
               <span className={styles.userName}>{username}</span>
               <img className={styles.imgProfile} src={image || avatar} />
@@ -36,6 +38,7 @@ const Layout = () => {
           </div>
         )}
       </header>
+
       <div className={styles.app}>
         <main className={styles.containerMain}>
           <Outlet />

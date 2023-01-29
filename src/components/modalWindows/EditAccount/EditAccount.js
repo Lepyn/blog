@@ -26,6 +26,7 @@ const EditAccount = () => {
         username: data.Username,
         email: data.Emailaddress.toLowerCase(),
         password: data.Password,
+        image: data.image,
       },
     }
     dispatch(fetchUpdateUserData(isValidData))
@@ -90,32 +91,23 @@ const EditAccount = () => {
           ></input>
           <div className={styles.error}>{errors?.Password && <p>{errors?.Password?.message || 'Error!'}</p>}</div>
         </label>
-        {/* <label className={styles.label}>
-          <span className={styles.description}> Repeat password</span>
+        <label className={styles.label}>
+          <span className={styles.description}> Avatar</span>
           <input
-            type="password"
+            type="text"
+            placeholder="Avatar image"
             className={styles.input}
-            placeholder="Repeat password"
-            {...register('PasswordConfirm', {
-              required: 'Поле обязательно для заполнения',
-              minLength: { value: 6, message: 'Минимум 6 символов' },
-              maxLength: { value: 40, message: 'Максимум 40 символов' },
-              validate: {
-                value: (value) => value === watch('Password'),
+            {...register('image', {
+              pattern: {
+                value: /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/,
+                message: 'адрес некорректен',
               },
             })}
-          ></input>
-          <div className={styles.error}>
-            {errors?.PasswordConfirm && <p>{errors?.PasswordConfirm?.message || 'Пароли не совпадают!'}</p>}
-            {/* {errors?.confirmPassword && 'Passwords do not match'} */}
-        {/* </div>
-        </label> */}
+          />
+          <div className={styles.error}>{errors?.PasswordConfirm && <p>{errors?.PasswordConfirm?.message || 'Пароли не совпадают!'}</p>}</div>
+        </label>
         <div className={styles.line}></div>
-        {/* <label className={styles.label}>
-          <input type="checkbox" className={styles.agree} {...register('chekk', { required: true })}></input>
-          <span className={styles.description}> I agree to the processing of my personal information</span>
-          <div className={styles.error}>{errors?.chekk && <p>{errors?.chekk?.message || 'Error!'}</p>}</div>
-        </label> */}
+
         <button type="submit" className={styles.createBtn} disabled={!isValid}>
           Edit
         </button>
