@@ -112,10 +112,6 @@ const EditAccount = () => {
           Edit
         </button>
       </form>
-
-      {/* <span className={styles.already}>
-        Already have an account? <Link to={'/sign-in'}>Sign In.</Link>
-      </span> */}
     </div>
   )
 }

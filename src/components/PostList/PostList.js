@@ -1,6 +1,5 @@
 import styles from './PostList.module.scss'
 import PostItem from '../PostItem/PostItem'
-import { Routes, Link, Route } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { fetchArticles, updateOffset, updatePage } from '../../redux/blogSlice/articlesSlice'

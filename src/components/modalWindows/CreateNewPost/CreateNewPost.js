@@ -13,7 +13,7 @@ const CreateNewPost = () => {
   } = useForm({
     mode: 'onBlur',
   })
-  const [buttons, setButtons] = useState([{ service: '' }])
+  const [tags, setTags] = useState([''])
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const { sendPost } = useSelector((state) => state.posts)
@@ -25,38 +25,35 @@ const CreateNewPost = () => {
     reset()
   }, [sendPost])
 
-  const handleBtnAdd = () => {
-    setButtons([...buttons, { service: '' }])
+  const handleAddBtn = () => {
+    setTags([...tags, ''])
   }
 
-  const handleBtnDelete = (index) => {
-    const list = [...buttons]
-    list.splice(index, 1)
-    setButtons(list)
+  const handleDeleteBtn = (index) => {
+    const list = [...tags]
+    list.splice(index)
+    setTags(list)
   }
 
-  const handleChange = (e, index) => {
-    const { name, value } = e.target
-    const list = [...buttons]
-    list[index][name] = value
-    setButtons(list)
+  const handleTagChange = (e, index) => {
+    let { value } = e.target
+    let list = [...tags]
+    list[index] = value
+    setTags(list)
   }
 
   const onSubmit = (data) => {
-    console.log(data)
     const isValidData = {
       article: {
         title: data.title,
         description: data.description,
         body: data.body,
-        tagList: data.tag,
+        tagList: tags.filter((tag) => tag), // сравниваю наличие пустых тегов
       },
     }
     dispatch(fetchGetNewArticle(isValidData))
     reset()
   }
-
-  console.log(buttons, 'buttons')
 
   return (
     <div className={styles.containerNewPost}>
@@ -105,34 +102,34 @@ const CreateNewPost = () => {
         </label>
         <span className={styles.labelSpan}>Tags</span>
         <label className={styles.wrapperTag}>
-          {buttons.map((oneInput, index) => (
+          {tags.map((btn, index) => (
             <>
               <div key={index}>
                 <input
-                  name="service"
+                  type="text"
                   placeholder="Tag"
+                  value={btn}
                   className={styles.inputTag}
-                  // name="service"
-                  // value={oneInput.service}
-                  onChange={(e) => handleChange(e, index)}
-                  {...register('tag', {
-                    pattern: {
-                      value: oneInput.service,
-                    },
-                  })}
-                />
-                {buttons.length > 1 && (
-                  <button className={styles.wrapperBtnDel} onClick={() => handleBtnDelete(index)}>
-                    Delete
-                  </button>
-                )}
-                {/* className={styles.buttonTag}  */}
-                {buttons.length - 1 === index && buttons.length < 4 && <button onClick={handleBtnAdd}>Add tag</button>}
+                  onChange={(e) => handleTagChange(e, index)}
+                  // {...register('tag', {
+                  //   required: false,
+                  //   maxLength: { value: 3000, message: 'Максимум 3000 символов' },
+                  //   minLength: { value: 3, message: 'Минимум 3 символа' },
+                  // })}
+                ></input>
+                <button type="button" className={styles.wrapperBtnDel} onClick={() => handleDeleteBtn(index)}>
+                  Delete
+                </button>
               </div>
             </>
           ))}
+          <button type="button" className={styles.wrapperBtnAdd} onClick={handleAddBtn}>
+            Add tag
+          </button>
         </label>
-        <button className={styles.send}>Send</button>
+        <button type="submit" className={styles.send} disabled={!isValid}>
+          Send
+        </button>
       </form>
     </div>
   )

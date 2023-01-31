@@ -6,6 +6,9 @@ import { fetchUserGetAuth } from '../../../redux/blogSlice/userSlice'
 import { useNavigate, Link } from 'react-router-dom'
 
 const AuthAccount = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+  const { isAuth, isReg, error, status } = useSelector((state) => state.user)
   const {
     register,
     formState: { errors, isValid },
@@ -14,10 +17,6 @@ const AuthAccount = () => {
   } = useForm({
     mode: 'onBlur',
   })
-
-  const dispatch = useDispatch()
-  const { isAuth, error, status } = useSelector((state) => state.user)
-  const navigate = useNavigate()
 
   const onSubmit = (data) => {
     const isLoginData = {
@@ -32,10 +31,17 @@ const AuthAccount = () => {
 
   useEffect(() => {
     if (isAuth) {
-      reset()
       navigate('/', { replace: true })
+      reset()
     }
   }, [isAuth])
+
+  // if (isAuth || isReg) {
+  //   return children
+  // }
+  // if (!isAuth || !isReg) {
+  //   return <Navigate to="../sign-in" />
+  // }
 
   return (
     <div className={styles.wrapper}>

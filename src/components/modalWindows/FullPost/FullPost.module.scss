@@ -1,23 +1,24 @@
 .wrapper {
   display: flex;
   flex-direction: column;
-  align-items: center;
+
   margin: 24px auto 0px auto;
   height: 870px;
   padding: 15px;
   width: 941px;
   background: white;
+  .mainContainer {
+    display: flex;
+    justify-content: space-between;
+  }
 }
 
-.mainContainer {
-  display: flex;
-}
-
-.postInfo {
-  width: 701px;
-}
 .shortDescription {
   font-size: 12px;
+}
+
+.description {
+  word-break: break-all;
 }
 
 .tag {
@@ -60,10 +61,10 @@
 }
 
 .userInfo {
-  display: flex;
-  justify-content: flex-end;
-  margin-left: 70px;
-
+  .userWrapInfo {
+    display: flex;
+    justify-content: space-between;
+  }
   .userName {
     font-weight: 600;
   }
@@ -73,9 +74,41 @@
   }
 
   .userAvatar {
-    margin-right: 12px;
     background: url('../../../img/avatar.png') no-repeat center;
     height: 46px;
     width: 48px;
+  }
+}
+.wrapForBtn {
+  display: flex;
+  margin-top: 30px;
+
+  .deleteBtn {
+    padding: 6px 10px;
+    width: 78px;
+    height: 40px;
+    color: #f5222d;
+    border: 1px solid #f5222d;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 16px;
+    line-height: 24px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+
+  .editBtn {
+    padding: 6px 15px;
+    text-align: center;
+    width: 65px;
+    height: 26px;
+    color: #52c41a;
+    border: 1px solid #52c41a;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 16px;
+    line-height: 24px;
+    cursor: pointer;
+    text-decoration: none;
   }
 }

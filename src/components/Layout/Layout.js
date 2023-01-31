@@ -1,7 +1,7 @@
 import styles from './Layout.module.scss'
 import { Link, Outlet } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { updateLogout } from '../../redux/blogSlice/userSlice'
+import { updateLogout, updateIsEdit } from '../../redux/blogSlice/userSlice'
 import avatar from '../../img/avatar.png'
 
 const Layout = () => {
@@ -28,7 +28,7 @@ const Layout = () => {
             <Link to="new-article" className={styles.createArticle}>
               create Article
             </Link>
-            <Link to="/profile" className={styles.headerAuth}>
+            <Link to="/profile" onClick={updateIsEdit()} className={styles.headerAuth}>
               <span className={styles.userName}>{username}</span>
               <img className={styles.imgProfile} src={image || avatar} />
             </Link>

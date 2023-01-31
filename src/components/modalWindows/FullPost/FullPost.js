@@ -1,32 +1,42 @@
 import styles from './FullPost.module.scss'
 import { format } from 'date-fns'
 import { useDispatch, useSelector } from 'react-redux'
-import { Routes, Route, useParams, useLocation } from 'react-router-dom'
+import { useParams, useLocation, Link, useNavigate } from 'react-router-dom'
 import { useEffect } from 'react'
-import { fetchFullArticle } from '../../../redux/blogSlice/articlesSlice'
+import { fetchFullArticle, fetchDeleteOwnArticle, updatePageAfterDel } from '../../../redux/blogSlice/articlesSlice'
 import ReactMarkdown from 'react-markdown'
+import { message, Popconfirm } from 'antd'
 
 const FullPost = () => {
+  const location = useLocation()
+  const { author, title, description, createdAt, favoritesCount, tagList, body } = location.state
+  const navigate = useNavigate()
   const { slug } = useParams()
-  const {
-    posts: { articles },
-  } = useSelector((state) => state.posts)
-
   const dispatch = useDispatch()
+
+  // const {
+  //   posts: { articles },
+  // } = useSelector((state) => state.posts)
+  const { username } = useSelector((state) => state.user.user)
 
   useEffect(() => {
     dispatch(fetchFullArticle(slug))
   }, [dispatch, slug])
-
-  const location = useLocation()
-  const { author, title, description, createdAt, favoritesCount, tagList, body } = location.state
 
   const formatData = (data) => {
     if (!data) return null
     return format(new Date(data), 'MMMM d, yyyy')
   }
 
-  console.log(slug, 'sehdrjfkyghulij;okplESHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH')
+  const confirm = (e) => {
+    message.success('Пост удален')
+    dispatch(fetchDeleteOwnArticle(slug))
+    // console.log(slug)
+    navigate('/', { replace: true })
+  }
+  const cancel = (e) => {
+    message.error('Отмена удаления поста')
+  }
 
   return (
     <div className={styles.wrapper}>
@@ -42,13 +52,48 @@ const FullPost = () => {
         </div>
         <div className={styles.userInfo}>
           <div className={styles.userWrapInfo}>
-            <div className={styles.userName}> {author.username}</div>
-            <div className={styles.datePost}> {formatData(createdAt)}</div>
+            <div>
+              <div className={styles.userName}> {author.username}</div>
+              <div className={styles.datePost}> {formatData(createdAt)}</div>
+            </div>
+            <img className={styles.userAvatar} src={author.image} />
           </div>
-          <img className={styles.userAvatar} src={author.image} />
+          <div className={styles.wrapForBtn}>
+            {author.username === username && (
+              <>
+                <Popconfirm
+                  title="Удаление поста"
+                  description="Вы уверены, что хотите удалить пост?"
+                  onConfirm={confirm}
+                  onCancel={cancel}
+                  okText="Да"
+                  cancelText="Нет"
+                >
+                  <button type="submit" className={styles.deleteBtn}>
+                    Delete
+                  </button>
+                </Popconfirm>
+                <Link
+                  to="/edit"
+                  className={styles.editBtn}
+                  state={{
+                    key: slug,
+                    author: author,
+                    title: title,
+                    description: description,
+                    createdAt: createdAt,
+                    favoritesCount: favoritesCount,
+                    tagList: tagList,
+                    body: body,
+                  }}
+                >
+                  Edit
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </div>
-
       <div className={styles.description}>
         <ReactMarkdown>{body}</ReactMarkdown>
       </div>

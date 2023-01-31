@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect } from 'react'
-import styles from './App.module.scss'
 import PostList from '../PostList/PostList'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import CreateAccount from '../modalWindows/CreateAccount/CreateAccount'
 import CreateNewPost from '../modalWindows/CreateNewPost/CreateNewPost'
 import LoginAccount from '../modalWindows/AutAccount/AuthAccount'
@@ -14,6 +13,7 @@ import { fetchHoldUserAfterUpdate } from '../../redux/blogSlice/userSlice'
 
 const App = () => {
   const dispatch = useDispatch()
+  const { isAuth, isReg } = useSelector((state) => state.user)
 
   const refreshPage = () => {
     if (localStorage.getItem('token')) {
@@ -25,6 +25,10 @@ const App = () => {
   useEffect(() => {
     refreshPage()
   }, [])
+
+  const PrivateRoute = ({ children }) => {
+    return isReg || isAuth ? children : <Navigate to="../sign-in" />
+  }
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
@@ -34,7 +38,15 @@ const App = () => {
         <Route path="sign-in" element={<LoginAccount />} />
         <Route path="sign-up" element={<CreateAccount />} />
         <Route path="profile" element={<EditAccount />} />
-        <Route path="new-article" element={<CreateNewPost />} />
+        <Route
+          path="new-article"
+          element={
+            <PrivateRoute>
+              <CreateNewPost />
+            </PrivateRoute>
+          }
+        />
+        <Route path="edit" element={<EditPost />} />
       </Route>
     </Routes>
   )

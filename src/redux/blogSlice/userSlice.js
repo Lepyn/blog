@@ -28,11 +28,11 @@ const getUserSlice = createSlice({
       bio: '',
       image: '',
     },
-    error: '',
-    status: null,
     isReg: false,
     isAuth: false,
     update: false,
+    error: '',
+    status: null,
   },
   reducers: {
     updateLogout(state) {
@@ -45,6 +45,10 @@ const getUserSlice = createSlice({
         image: '',
       }
       state.isAuth = false
+      state.isReg = false
+    },
+    updateIsEdit(state) {
+      state.update = false
     },
   },
   extraReducers: {
@@ -94,6 +98,6 @@ const getUserSlice = createSlice({
   },
 })
 
-export const { updateIsReg, updateLogout } = getUserSlice.actions
+export const { updateLogout, updateIsEdit } = getUserSlice.actions
 
 export default getUserSlice.reducer
