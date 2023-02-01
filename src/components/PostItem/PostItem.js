@@ -1,24 +1,26 @@
 import styles from './PostItem.module.scss'
 import { format } from 'date-fns'
 import { Link } from 'react-router-dom'
-// import FullPost from '../modalWindows/FullPost/FullPost'
+import { HeartFilled, HeartOutlined } from '@ant-design/icons'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { fetchFullArticle, fetchLikeForArticleAdd, fetchLikeForArticleRemove } from '../../redux/blogSlice/articlesSlice'
-
+import { fetchFullArticle, fetchLikeArticle } from '../../redux/blogSlice/articlesSlice'
+// import avatar from '../../img/'
 const PostItem = (props) => {
   let { author, title, description, createdAt, favoritesCount, tagList, body, slug, favorited } = props
-
-  let [like, setLike] = useState(favoritesCount)
+  console.log(favorited, 'после пропса до ЮзЭффекта')
+  const [like, setLike] = useState(favorited)
+  const [count, setCount] = useState(favoritesCount)
 
   const {
     error,
     status,
-    likeCount,
+    // likeCount,
     posts: { articles, articlesCount },
   } = useSelector((state) => state.posts)
+  //
 
-  const { isIn, isReg } = useSelector((state) => state.user)
+  const { isAuth, isReg } = useSelector((state) => state.user)
 
   const dispatch = useDispatch()
 
@@ -27,19 +29,31 @@ const PostItem = (props) => {
     return format(new Date(data), 'MMMM d, yyyy')
   }
 
-  const handleLike = (e) => {
-    if (!likeCount) {
-      dispatch(fetchLikeForArticleAdd(slug))
-      setLike(like + 1)
-    } else {
-      dispatch(fetchLikeForArticleRemove(slug))
-      setLike(like - 1)
-    }
-  }
+  // useEffect(() => {
+  //   if (slug) {
+  //     dispatch(fetchFullArticle(slug))
+  //   }
+  //   if (favorited || !favorited) {
+  //     console.log(favorited, 'в юзэффекте до сета')
+  //     setLike(favorited)
+  //     console.log(favorited, 'в юзэффекте после сета')
+  //   }
+  //   setCount(favoritesCount)
+  // }, [slug, favorited, favoritesCount])
 
-  useEffect(() => {
-    dispatch(fetchFullArticle(slug))
-  }, [slug])
+  // useEffect(() => {
+  //   dispatch(fetchFullArticle(slug))
+  //   if (favoritesCount || !favoritesCount) {
+  //     setLike(favorited)
+  //   }
+  //   setCount(favoritesCount)
+  // }, [slug, favorited, favoritesCount])
+
+  // const handleLike = () => {
+  //   setLike(!like)
+  //   setCount(like ? count - 1 : count + 1)
+  //   dispatch(fetchLikeArticle([like, slug]))
+  // }
 
   return (
     <>
@@ -60,20 +74,46 @@ const PostItem = (props) => {
               }}
               className={styles.title}
             >
-              {title}
+              {title?.length > 35 ? `${title.slice(0, 35)}…` : title}
             </Link>
-            <button className={styles.like} onClick={handleLike}></button>
-            <span className={styles.countLike}>{like}</span>
+            <button
+              className={styles.like}
+              onClick={() => {
+                setLike(!like)
+                setCount(like ? count - 1 : count + 1)
+                dispatch(fetchLikeArticle([like, slug]))
+              }}
+            >
+              {like && isAuth ? (
+                <HeartFilled style={{ cursor: 'pointer', marginRight: '5px', fontSize: '16px', color: 'red' }} />
+              ) : (
+                <HeartOutlined
+                  style={{
+                    cursor: 'pointer',
+                    marginRight: '5px',
+                    fontSize: '16px',
+                    color: 'rgba(0, 0, 0, .75)',
+                  }}
+                />
+              )}
+            </button>
+            <span className={styles.countLike}>{count}</span>
           </div>
-          {tagList.length === 0 ? '' : <div className={styles.tag}>{tagList}</div>}
-          <span className={styles.description}>{description}</span>
+          <ul style={tagList.length ? { display: 'flex' } : { display: 'none' }}>
+            {tagList.map((tag, index) => (
+              <li className={styles.tag} key={index}>
+                {tag?.length > 35 ? `${tag.slice(0, 35)}…` : tag}
+              </li>
+            ))}
+          </ul>
+          <span className={styles.description}>{description?.length > 100 ? `${description.slice(0, 100)}…` : description}</span>
         </div>
         <div className={styles.userInfo}>
           <div className={styles.userWrapInfo}>
             <div className={styles.userName}>{author.username}</div>
             <p className={styles.datePost}>{formatData(createdAt)}</p>
           </div>
-          <img className={styles.userAvatar} src={author.image} />
+          <img className={styles.userAvatar} src={author?.image} />
         </div>
       </li>
     </>

@@ -35,19 +35,16 @@
   width: 213px;
 
   .title {
+    font-family: 'inter ui';
     color: #1890ff;
     margin: 0px 0px 4px 0px;
     padding: 0px;
     font-size: 20px;
   }
   .like {
-    background-image: url('../../img/like.png');
     cursor: pointer;
     border: none;
-    margin: 0px 0px 2px 13px;
-    height: 15px;
-    width: 16px;
-    border-radius: 0px;
+    background: none;
   }
   .countLike {
     margin: 3px 0px 0px 5px;

@@ -5,8 +5,8 @@ import {
   getNewArticle,
   deleteOwnArticle,
   editOwnArticle,
-  sendLikeForArticle,
-  removeLikeForArticle,
+  // sendLikeForArticle,
+  // removeLikeForArticle,
 } from '../../services/arcticleServise'
 // import { getUserRegistration } from '../../services/userServise'
 
@@ -14,8 +14,8 @@ export const fetchArticles = createAsyncThunk('/articles/fetchArticles', async (
   return await getArticlesList(offset)
 })
 
-export const fetchFullArticle = createAsyncThunk('/articles/fetchFullArticle', async () => {
-  return await getFullArticle()
+export const fetchFullArticle = createAsyncThunk('/articles/fetchFullArticle', async (slug) => {
+  return await getFullArticle(slug)
 })
 
 export const fetchGetNewArticle = createAsyncThunk('/articles/fetchGetNewArticle', async (isValidData) => {
@@ -26,22 +26,63 @@ export const fetchDeleteOwnArticle = createAsyncThunk('/articles/fetchDeleteOwnA
   return await deleteOwnArticle(slug)
 })
 
-export const fetchEditOwnArticle = createAsyncThunk('/articles/fetchEditOwnArticle', async (slug, isValidData) => {
-  return await editOwnArticle(slug, isValidData)
+// export const fetchEditOwnArticle = createAsyncThunk('/articles/fetchEditOwnArticle', async (slugData) => {
+//   return await editOwnArticle(slugData)
+// })
+export const fetchEditOwnArticle = createAsyncThunk('articles/fetchEditOwnArticle', async (slugData, { rejectWithValue }) => {
+  const token = localStorage.getItem('token')
+  const { key } = slugData
+  console.log(slugData)
+  const response = await fetch(`https://blog.kata.academy/api/articles/${key}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(slugData.validData),
+  })
+  if (!response.ok) {
+    return rejectWithValue('Article not updated')
+  }
+  return await response.json()
 })
 
-export const fetchLikeForArticleAdd = createAsyncThunk('/article/fetchLikeForArticle', async (slug, countLike) => {
-  return await sendLikeForArticle(slug, countLike)
-})
-
-export const fetchLikeForArticleRemove = createAsyncThunk('/article/fetchLikeForArticleRemove', async (slug, countLike) => {
-  return await removeLikeForArticle(slug, countLike)
+export const fetchLikeArticle = createAsyncThunk('articles/fetchLikeArticle', async (slug, { rejectWithValue }) => {
+  const token = localStorage.getItem('token')
+  const response = await fetch(`https://blog.kata.academy/api/articles/${slug[1]}/favorite`, {
+    method: !slug[0] ? 'POST' : 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+  if (!response.ok) {
+    return rejectWithValue('Лайк не поставлен')
+  }
+  return await response.json()
 })
 
 const getpostSlice = createSlice({
   name: 'posts',
   initialState: {
     posts: [],
+    article: {
+      slug: '',
+      title: '',
+      description: '',
+      body: '',
+      createdAt: '',
+      updatedAt: '',
+      tagList: [],
+      favorited: false,
+      favoritesCount: 0,
+      author: {
+        username: '',
+        bio: '',
+        image: '',
+        following: false,
+      },
+    },
     articlesCount: 0,
     status: null,
     error: null,
@@ -53,8 +94,8 @@ const getpostSlice = createSlice({
     deletePost: false,
     editPost: false,
     currentArticle: null,
-    currentLike: null,
-    likeCount: 1,
+    favorited: false,
+    likeCount: 0,
     // newEditPost: {
     //   title: '',
     //   description: '',
@@ -74,12 +115,12 @@ const getpostSlice = createSlice({
     updatePageAfterDel: (state) => {
       state.deletePost = false
     },
-    updateArticle: (state, { payload }) => {
-      const updatedArticle = payload
-      state.currentArticle = updatedArticle
-      const index = state.posts.findIndex((a) => a.slug === updatedArticle.slug)
-      state.articles[index] = updatedArticle
-    },
+    // updateArticle: (state, { payload }) => {
+    //   const updatedArticle = payload
+    //   state.currentArticle = updatedArticle
+    //   const index = state.posts.findIndex((a) => a.slug === updatedArticle.slug)
+    //   state.articles[index] = updatedArticle
+    // },
     // updatefavoriteRequest: (state) => {
     //   state.loading = true
     //   state.error = null
@@ -107,6 +148,14 @@ const getpostSlice = createSlice({
     [fetchArticles.rejected]: (state, { payload }) => {
       state.status = 'Error'
       state.error = payload
+    },
+    [fetchFullArticle.pending]: (state, { payload }) => {
+      state.status = 'Loading'
+      state.error = null
+    },
+    [fetchFullArticle.fulfilled]: (state, { payload }) => {
+      state.status = 'Resolved'
+      state.article = payload
     },
     [fetchGetNewArticle.pending]: (state) => {
       state.status = 'Loading'
@@ -136,43 +185,45 @@ const getpostSlice = createSlice({
       state.status = 'Error'
       state.error = payload
     },
-    [fetchLikeForArticleAdd.pending]: (state) => {
-      state.status = 'Resolved'
-      state.likeCount = false
-      state.posts.favorited = false
+    // [fetchLikeForArticleAdd.pending]: (state) => {
+    //   state.status = 'Loading'
+    //   state.likeCount = false
+    //   state.posts.favorited = false
+    // },
+    // [fetchLikeForArticleAdd.fulfilled]: (state, { payload }) => {
+    //   state.status = 'Resolved'
+    //   state.posts.favoritesCount = payload
+    //   state.posts.favorited = true
+    //   state.likeCount = true
+    // },
+    [fetchLikeArticle.pending]: (state) => {
+      state.status = true
+      // state.likeCount = false
+      // state.posts.favorited = false
     },
-    [fetchLikeForArticleAdd.fulfilled]: (state, { payload }) => {
-      state.status = 'Resolved'
-      state.posts.favoritesCount = payload
-      state.posts.favorited = true
-      state.likeCount = true
-    },
-    [fetchLikeForArticleRemove.pending]: (state) => {
-      state.status = 'Resolved'
-      state.likeCount = false
-      state.posts.favorited = false
-    },
-    [fetchLikeForArticleRemove.fulfilled]: (state) => {
-      state.status = 'Resolved'
-      state.likeCount = false
-      state.posts.favorited = false
+    [fetchLikeArticle.fulfilled]: (state, { payload }) => {
+      state.status = false
+      // state.likeCount = false
+      state.posts.articles.map((article) => {
+        if (article.slug === payload.article.slug) article = payload.article
+        return article
+      })
+      // state.posts.favorited = false
     },
 
-    // [fetchEditOwnArticle.pending]: (state, { payload }) => {
-    //   state.status = 'Loading'
-    //   state.error = payload
-    //   state.editPost = false
-    // },
-    // [fetchEditOwnArticle.fulfilled]: (state, { payload }) => {
-    //   state.status = false
-    //   state.editPost = true
-    //   state.newEditPost = payload
-    //   state.slug = payload
-    // },
-    // [fetchEditOwnArticle.rejected]: (state, action) => {
-    //   state.status = 'Error'
-    //   state.error = action.payload
-    // },
+    [fetchEditOwnArticle.pending]: (state, { payload }) => {
+      state.status = 'Loading'
+      state.error = payload
+      state.editPost = false
+    },
+    [fetchEditOwnArticle.fulfilled]: (state, { payload }) => {
+      state.status = false
+      state.editPost = true
+    },
+    [fetchEditOwnArticle.rejected]: (state, action) => {
+      state.status = 'Error'
+      state.error = action.payload
+    },
   },
 })
 export const { updateOffset, updatePage, updateSlug, updatePageAfterDel, updateArticle, updatefavoriteRequest, updatefavoriteSuccess, updatefavoriteError } =

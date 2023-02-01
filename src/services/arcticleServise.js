@@ -16,12 +16,17 @@ export const getArticlesList = async (offset = 0) => {
   return response.data
 }
 
-export const getFullArticle = async () => {
-  const response = await instance.get(`articles/`, {
-    params: {
-      slug: '',
-    },
-  })
+export const getFullArticle = async (slug) => {
+  const token = localStorage.getItem('token')
+  const headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  }
+  const response = await instance.get(`articles/${slug}`, { headers })
+  //   params: {
+  //     slug: '',
+  //   },
+  // })
 
   return response.data
 }
@@ -51,34 +56,35 @@ export const deleteOwnArticle = async (slug) => {
   }
 }
 
-export const editOwnArticle = async (slug, isValidData) => {
+export const editOwnArticle = async (slugData) => {
   const token = localStorage.getItem('token')
   const headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${token}`,
   }
-  const response = await axios.put(`https://blog.kata.academy/api/articles/${slug}`, isValidData, { headers })
-  console.log(response)
+  const { slug } = slugData
+  const response = await axios.put(`https://blog.kata.academy/api/articles/${slug}`, slugData, { headers })
+  // console.log(response.status)
 
-  // return response.data
-}
-
-export const sendLikeForArticle = async (slug, countLike) => {
-  const token = localStorage.getItem('token')
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  }
-  const response = await instance.post(`/articles/${slug}/favorite`, countLike, { headers })
   return response.data
 }
 
-export const removeLikeForArticle = async (slug) => {
-  const token = localStorage.getItem('token')
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
-  }
-  const response = await instance.delete(`/articles/${slug}/favorite`, { headers })
-  return response.data
-}
+// export const sendLikeForArticle = async (slug, countLike) => {
+//   const token = localStorage.getItem('token')
+//   const headers = {
+//     'Content-Type': 'application/json',
+//     Authorization: `Bearer ${token}`,
+//   }
+//   const response = await instance.post(`/articles/${slug}/favorite`, countLike, { headers })
+//   return response.data
+// }
+
+// export const removeLikeForArticle = async (slug) => {
+//   const token = localStorage.getItem('token')
+//   const headers = {
+//     'Content-Type': 'application/json',
+//     Authorization: `Bearer ${token}`,
+//   }
+//   const response = await instance.delete(`/articles/${slug}/favorite`, { headers })
+//   return response.data
+// }

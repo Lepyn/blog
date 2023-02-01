@@ -13,7 +13,9 @@ const Layout = () => {
   return (
     <>
       <header className={styles.containerHeader}>
-        <Link to="/">ГОЛОВА НАХУЙ</Link>
+        <Link style={{ textDecoration: 'none' }} to="/">
+          ГОЛОВА НАХУЙ
+        </Link>
         {!isAuth ? (
           <div className={styles.containerBtn}>
             <Link to="/sign-in" className={styles.signInBtn}>
