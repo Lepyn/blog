@@ -1,42 +1,56 @@
 import styles from './FullPost.module.scss'
 import { format } from 'date-fns'
 import { useDispatch, useSelector } from 'react-redux'
+import { HeartFilled, HeartOutlined } from '@ant-design/icons'
 import { useParams, useLocation, Link, useNavigate } from 'react-router-dom'
-import { useEffect } from 'react'
-import { fetchFullArticle, fetchDeleteOwnArticle, updatePageAfterDel } from '../../../redux/blogSlice/articlesSlice'
+import { useEffect, useState } from 'react'
+import { fetchFullArticle, fetchLikeArticle, fetchDeleteOwnArticle, fetchArticles, updatePageAfterDel } from '../../../redux/blogSlice/articlesSlice'
 import ReactMarkdown from 'react-markdown'
 import { message, Popconfirm } from 'antd'
 
 const FullPost = () => {
   const location = useLocation()
-  const { author, title, description, createdAt, favoritesCount, tagList, body } = location.state
+  const { author, title, description, createdAt, favoritesCount, tagList, body, favorited } = location.state
+  // const { favorited } = useSelector((state) => state.posts)
+  // console.log(favorited, 'favorited')
   const navigate = useNavigate()
   const { slug } = useParams()
   const dispatch = useDispatch()
+
+  const [like, setLike] = useState(favorited)
+  const [count, setCount] = useState(favoritesCount)
 
   // const {
   //   posts: { articles },
   // } = useSelector((state) => state.posts)
   const { username } = useSelector((state) => state.user.user)
-
-  useEffect(() => {
-    dispatch(fetchFullArticle(slug))
-  }, [dispatch, slug])
+  const { isAuth } = useSelector((state) => state.user)
 
   const formatData = (data) => {
     if (!data) return null
     return format(new Date(data), 'MMMM d, yyyy')
   }
 
+  useEffect(() => {
+    if (slug) {
+      dispatch(fetchFullArticle(slug))
+    }
+    if (favorited || !favorited) {
+      setLike(favorited)
+    }
+    setCount(favoritesCount)
+  }, [slug, favorited, favoritesCount])
+
   const confirm = (e) => {
     message.success('Пост удален')
     dispatch(fetchDeleteOwnArticle(slug))
-    // console.log(slug)
     navigate('/', { replace: true })
   }
   const cancel = (e) => {
     message.error('Отмена удаления поста')
   }
+
+  const hiddenText = description && description.length > 100 ? description.slice(0, description.indexOf('', 70)) + '...' : description
 
   return (
     <div className={styles.wrapper}>
@@ -44,11 +58,38 @@ const FullPost = () => {
         <div className={styles.postInfo}>
           <div className={styles.postArticle}>
             <span className={styles.title}>{title} </span>
-            <button className={styles.like}></button>
-            <div className={styles.countLike}>{favoritesCount}</div>
+            <button
+              className={styles.like}
+              onClick={() => {
+                setLike(!like)
+                setCount(like ? count - 1 : count + 1)
+                dispatch(fetchLikeArticle([like, slug]))
+              }}
+            >
+              {like && isAuth ? (
+                <HeartFilled style={{ cursor: 'pointer', marginRight: '5px', fontSize: '16px', color: 'red' }} />
+              ) : (
+                <HeartOutlined
+                  style={{
+                    cursor: 'pointer',
+                    marginRight: '5px',
+                    fontSize: '16px',
+                    color: 'rgba(0, 0, 0, .75)',
+                  }}
+                />
+              )}
+            </button>
+            <div className={styles.countLike}>{count}</div>
           </div>
-          <div className={styles.tag}>{tagList}</div>
-          <span className={styles.shortDescription}>{description}</span>
+          <div className={styles.infoTag}>
+            {tagList &&
+              tagList.map((el) => (
+                <div className={styles.tag} key={el.id}>
+                  {el.substr(0, 7)}
+                </div>
+              ))}
+          </div>
+          <span className={styles.shortDescription}>{hiddenText}</span>
         </div>
         <div className={styles.userInfo}>
           <div className={styles.userWrapInfo}>

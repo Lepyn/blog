@@ -2,13 +2,14 @@ import styles from './PostItem.module.scss'
 import { format } from 'date-fns'
 import { Link } from 'react-router-dom'
 import { HeartFilled, HeartOutlined } from '@ant-design/icons'
+import { message, Popconfirm, Button } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { fetchFullArticle, fetchLikeArticle } from '../../redux/blogSlice/articlesSlice'
 // import avatar from '../../img/'
 const PostItem = (props) => {
   let { author, title, description, createdAt, favoritesCount, tagList, body, slug, favorited } = props
-  console.log(favorited, 'после пропса до ЮзЭффекта')
+  // console.log(favorited, 'после пропса до ЮзЭффекта')
   const [like, setLike] = useState(favorited)
   const [count, setCount] = useState(favoritesCount)
 
@@ -29,31 +30,11 @@ const PostItem = (props) => {
     return format(new Date(data), 'MMMM d, yyyy')
   }
 
-  // useEffect(() => {
-  //   if (slug) {
-  //     dispatch(fetchFullArticle(slug))
-  //   }
-  //   if (favorited || !favorited) {
-  //     console.log(favorited, 'в юзэффекте до сета')
-  //     setLike(favorited)
-  //     console.log(favorited, 'в юзэффекте после сета')
-  //   }
-  //   setCount(favoritesCount)
-  // }, [slug, favorited, favoritesCount])
-
-  // useEffect(() => {
-  //   dispatch(fetchFullArticle(slug))
-  //   if (favoritesCount || !favoritesCount) {
-  //     setLike(favorited)
-  //   }
-  //   setCount(favoritesCount)
-  // }, [slug, favorited, favoritesCount])
-
-  // const handleLike = () => {
-  //   setLike(!like)
-  //   setCount(like ? count - 1 : count + 1)
-  //   dispatch(fetchLikeArticle([like, slug]))
-  // }
+  const handleLike = () => {
+    setLike(!like)
+    setCount(like ? count - 1 : count + 1)
+    dispatch(fetchLikeArticle([like, slug]))
+  }
 
   return (
     <>
@@ -71,38 +52,25 @@ const PostItem = (props) => {
                 favoritesCount: favoritesCount,
                 tagList: tagList,
                 body: body,
+                favorited: favorited,
               }}
               className={styles.title}
             >
               {title?.length > 35 ? `${title.slice(0, 35)}…` : title}
             </Link>
-            <button
-              className={styles.like}
-              onClick={() => {
-                setLike(!like)
-                setCount(like ? count - 1 : count + 1)
-                dispatch(fetchLikeArticle([like, slug]))
-              }}
-            >
-              {like && isAuth ? (
-                <HeartFilled style={{ cursor: 'pointer', marginRight: '5px', fontSize: '16px', color: 'red' }} />
-              ) : (
-                <HeartOutlined
-                  style={{
-                    cursor: 'pointer',
-                    marginRight: '5px',
-                    fontSize: '16px',
-                    color: 'rgba(0, 0, 0, .75)',
-                  }}
-                />
-              )}
-            </button>
+            {isAuth || isReg ? (
+              <Button className={styles.like} onClick={handleLike}>
+                {like ? <HeartFilled style={{ color: '#FF0707' }} /> : <HeartOutlined />}
+              </Button>
+            ) : (
+              <HeartOutlined style={{ marginLeft: '10px' }} />
+            )}
             <span className={styles.countLike}>{count}</span>
           </div>
-          <ul style={tagList.length ? { display: 'flex' } : { display: 'none' }}>
+          <ul className={styles.wrapTagList}>
             {tagList.map((tag, index) => (
               <li className={styles.tag} key={index}>
-                {tag?.length > 35 ? `${tag.slice(0, 35)}…` : tag}
+                {tag?.length > 6 ? `${tag.slice(0, 6)}` : tag}
               </li>
             ))}
           </ul>

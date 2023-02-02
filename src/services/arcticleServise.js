@@ -2,13 +2,17 @@ import axios from 'axios'
 import instance from './baseUrlService'
 
 export const getArticlesList = async (offset = 0) => {
+  const token = localStorage.getItem('token')
   const response = await instance.get('articles', {
     params: {
       limit: 5,
       offset,
     },
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
   })
-
   if (response.statusText !== '') {
     console.log('ОШИБКА В arcticleServise')
   }

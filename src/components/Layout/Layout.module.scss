@@ -1,11 +1,11 @@
 .containerHeader {
+  font-family: 'Nurito';
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: 80px;
   background: white;
   padding: 0 22px;
-  text-decoration: none;
 }
 
 .containerBtn {
@@ -38,7 +38,6 @@
   border: none;
   background: white;
   cursor: pointer;
-  text-decoration: none;
   margin-right: 19px;
 }
 
@@ -51,12 +50,11 @@
   border: 1px solid #52c41a;
   border-radius: 5px;
   background: white;
-  font-family: 'Inter UI';
+  font-family: 'Nurito';
   font-size: 18px;
   line-height: 28px;
   color: #52c41a;
   cursor: pointer;
-  text-decoration: none;
 }
 
 .containerProfile {
@@ -65,7 +63,6 @@
   max-width: 500px;
   .headerAuth {
     display: flex;
-    text-decoration: none;
   }
   .createArticle {
     background: white;
@@ -74,7 +71,6 @@
     border-radius: 5px;
     padding: 6px 10px;
     cursor: pointer;
-    text-decoration: none;
   }
 
   .logOut {
@@ -82,19 +78,17 @@
     padding: 6px 18px 10px 18px;
     text-align: center;
     justify-content: center;
-    font-family: 'Inter UI';
+    font-family: 'Nurito';
     font-size: 18px;
     line-height: 28px;
     border-radius: 5px;
     border: 1px solid rgba(0, 0, 0, 0.75);
     color: #000000;
-    text-decoration: none;
   }
 
   .userName {
-    text-decoration: none;
     color: black;
-    font-family: 'Inter UI';
+    font-family: 'Nurito';
     font-size: 18px;
     line-height: 28px;
     margin: 10px 16px 0px 26px;

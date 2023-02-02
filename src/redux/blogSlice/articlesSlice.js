@@ -155,7 +155,8 @@ const getpostSlice = createSlice({
     },
     [fetchFullArticle.fulfilled]: (state, { payload }) => {
       state.status = 'Resolved'
-      state.article = payload
+      state.favorited = payload
+      state.favoritesCount = payload
     },
     [fetchGetNewArticle.pending]: (state) => {
       state.status = 'Loading'

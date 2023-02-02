@@ -31,7 +31,7 @@ const CreateNewPost = () => {
 
   const handleDeleteBtn = (index) => {
     const list = [...tags]
-    list.splice(index)
+    list.splice(index, 1)
     setTags(list)
   }
 
@@ -66,7 +66,7 @@ const CreateNewPost = () => {
             placeholder="Title"
             {...register('title', {
               required: 'Поле обязательно для заполнения',
-              maxLength: { value: 3000, message: 'Максимум 100 символов' },
+              maxLength: { value: 50, message: 'Максимум 50 символов' },
               minLength: { value: 3, message: 'Минимум 3 символа' },
             })}
           ></input>
@@ -75,12 +75,13 @@ const CreateNewPost = () => {
         <label className={styles.label}>
           <span className={styles.labelSpan}>Short description</span>
           <input
+            // id="inputTitle"
             className={styles.input}
             type="text"
             placeholder="Title"
             {...register('description', {
               required: 'Поле обязательно для заполнения',
-              maxLength: { value: 3000, message: 'Максимум 3000 символов' },
+              maxLength: { value: 300, message: 'Максимум 300 символов' },
               minLength: { value: 3, message: 'Минимум 3 символа' },
             })}
           ></input>
@@ -94,17 +95,18 @@ const CreateNewPost = () => {
             placeholder="Text"
             {...register('body', {
               required: 'Поле обязательно для заполнения',
-              maxLength: { value: 3000, message: 'Максимум 3000 символов' },
+              maxLength: { value: 1000, message: 'Максимум 1000 символов' },
               minLength: { value: 3, message: 'Минимум 3 символа' },
             })}
           ></input>
           <div className={styles.error}>{errors?.body && <p>{errors?.body?.message || 'Error!'}</p>}</div>
         </label>
-        <span className={styles.labelSpan}>Tags</span>
+        {/* <span className={styles.labelSpan}> </span> */}
         <label className={styles.wrapperTag}>
+          Tags
           {tags.map((btn, index) => (
             <>
-              <div key={index}>
+              <div className={styles.wrapperSend} key={index}>
                 <input
                   type="text"
                   placeholder="Tag"
@@ -116,16 +118,20 @@ const CreateNewPost = () => {
                   //   maxLength: { value: 3000, message: 'Максимум 3000 символов' },
                   //   minLength: { value: 3, message: 'Минимум 3 символа' },
                   // })}
-                ></input>
-                <button type="button" className={styles.wrapperBtnDel} onClick={() => handleDeleteBtn(index)}>
-                  Delete
-                </button>
+                />
+                {tags.length > 1 && (
+                  <button type="button" className={styles.wrapperBtnDel} onClick={() => handleDeleteBtn(index)}>
+                    Delete
+                  </button>
+                )}
+                {tags.length - 1 === index && tags.length < 4 && (
+                  <button type="button" className={styles.wrapperBtnAdd} onClick={handleAddBtn}>
+                    Add tag
+                  </button>
+                )}
               </div>
             </>
           ))}
-          <button type="button" className={styles.wrapperBtnAdd} onClick={handleAddBtn}>
-            Add tag
-          </button>
         </label>
         <button type="submit" className={styles.send} disabled={!isValid}>
           Send

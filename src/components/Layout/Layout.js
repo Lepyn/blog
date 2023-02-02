@@ -13,8 +13,8 @@ const Layout = () => {
   return (
     <>
       <header className={styles.containerHeader}>
-        <Link style={{ textDecoration: 'none' }} to="/">
-          ГОЛОВА НАХУЙ
+        <Link style={{ textDecoration: 'none', fontSize: '18px', color: 'rgba(0, 0, 0, 0.85)' }} to="/">
+          Realworld Blog
         </Link>
         {!isAuth ? (
           <div className={styles.containerBtn}>
