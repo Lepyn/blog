@@ -1,6 +1,6 @@
 import styles from './PostItem.module.scss'
 import { format } from 'date-fns'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { HeartFilled, HeartOutlined } from '@ant-design/icons'
 import { message, Popconfirm, Button } from 'antd'
 import { useDispatch, useSelector } from 'react-redux'
@@ -9,16 +9,18 @@ import { fetchFullArticle, fetchLikeArticle } from '../../redux/blogSlice/articl
 // import avatar from '../../img/'
 const PostItem = (props) => {
   let { author, title, description, createdAt, favoritesCount, tagList, body, slug, favorited } = props
+  const location = useLocation()
+  // let { author, title, description, createdAt, favoritesCount, tagList, body, slug, favorited } = location.state
   // console.log(favorited, 'после пропса до ЮзЭффекта')
   const [like, setLike] = useState(favorited)
   const [count, setCount] = useState(favoritesCount)
 
-  const {
-    error,
-    status,
-    // likeCount,
-    posts: { articles, articlesCount },
-  } = useSelector((state) => state.posts)
+  // const {
+  //   error,
+  //   status,
+  //   // likeCount,
+  //   posts: { articles, articlesCount },
+  // } = useSelector((state) => state.posts)
   //
 
   const { isAuth, isReg } = useSelector((state) => state.user)
@@ -67,6 +69,7 @@ const PostItem = (props) => {
             )}
             <span className={styles.countLike}>{count}</span>
           </div>
+          {/* style={tagList.length ? { display: 'flex' } : { display: 'none' }} */}
           <ul className={styles.wrapTagList}>
             {tagList.map((tag, index) => (
               <li className={styles.tag} key={index}>

@@ -14,7 +14,7 @@ export const getArticlesList = async (offset = 0) => {
     },
   })
   if (response.statusText !== '') {
-    console.log('ОШИБКА В arcticleServise')
+    throw new Error('ошибка обработки данных')
   }
 
   return response.data
@@ -71,6 +71,20 @@ export const editOwnArticle = async (slugData) => {
   // console.log(response.status)
 
   return response.data
+}
+
+export const getLikeArticle = async (slug) => {
+  const token = localStorage.getItem('token')
+  const response = await axios({
+    method: !slug[0] ? 'POST' : 'DELETE',
+    url: `https://blog.kata.academy/api/articles/${slug[1]}/favorite`,
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  return response
 }
 
 // export const sendLikeForArticle = async (slug, countLike) => {

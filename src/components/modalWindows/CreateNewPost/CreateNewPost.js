@@ -105,32 +105,30 @@ const CreateNewPost = () => {
         <label className={styles.wrapperTag}>
           Tags
           {tags.map((btn, index) => (
-            <>
-              <div className={styles.wrapperSend} key={index}>
-                <input
-                  type="text"
-                  placeholder="Tag"
-                  value={btn}
-                  className={styles.inputTag}
-                  onChange={(e) => handleTagChange(e, index)}
-                  // {...register('tag', {
-                  //   required: false,
-                  //   maxLength: { value: 3000, message: 'Максимум 3000 символов' },
-                  //   minLength: { value: 3, message: 'Минимум 3 символа' },
-                  // })}
-                />
-                {tags.length > 1 && (
-                  <button type="button" className={styles.wrapperBtnDel} onClick={() => handleDeleteBtn(index)}>
-                    Delete
-                  </button>
-                )}
-                {tags.length - 1 === index && tags.length < 4 && (
-                  <button type="button" className={styles.wrapperBtnAdd} onClick={handleAddBtn}>
-                    Add tag
-                  </button>
-                )}
-              </div>
-            </>
+            <div className={styles.wrapperSend} key={index}>
+              <input
+                type="text"
+                placeholder="Tag"
+                value={btn}
+                className={styles.inputTag}
+                onChange={(e) => handleTagChange(e, index)}
+                // {...register('tag', {
+                //   required: false,
+                //   maxLength: { value: 3000, message: 'Максимум 3000 символов' },
+                //   minLength: { value: 3, message: 'Минимум 3 символа' },
+                // })}
+              />
+              {tags.length > 1 && (
+                <button type="button" className={styles.wrapperBtnDel} onClick={() => handleDeleteBtn(index)}>
+                  Delete
+                </button>
+              )}
+              {tags.length - 1 === index && tags.length < 4 && (
+                <button type="button" className={styles.wrapperBtnAdd} onClick={handleAddBtn}>
+                  Add tag
+                </button>
+              )}
+            </div>
           ))}
         </label>
         <button type="submit" className={styles.send} disabled={!isValid}>

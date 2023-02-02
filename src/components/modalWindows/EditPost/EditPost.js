@@ -10,8 +10,11 @@ const EditPost = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   // const [tags, setTags] = useState([''])
-  const { key, title, description, tagList, body } = location.state
+  const { title, description, tagList, body, key } = location.state
+  // const { slug } = useParams()
   const { editPost, status, error } = useSelector((state) => state.posts)
+  // const { slug } = useSelector((state) => state.user.user)
+
   const {
     register,
     formState: { errors, isValid },
@@ -46,9 +49,9 @@ const EditPost = () => {
       isValidData,
       key,
     }
-    if (key) {
-      dispatch(fetchEditOwnArticle(slugData))
-    }
+    // if (key) {
+    dispatch(fetchEditOwnArticle(slugData))
+    // }
 
     // reset()
   }

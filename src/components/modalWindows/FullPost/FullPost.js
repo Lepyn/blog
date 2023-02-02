@@ -10,9 +10,12 @@ import { message, Popconfirm } from 'antd'
 
 const FullPost = () => {
   const location = useLocation()
-  const { author, title, description, createdAt, favoritesCount, tagList, body, favorited } = location.state
-  // const { favorited } = useSelector((state) => state.posts)
-  // console.log(favorited, 'favorited')
+  // const { author, title, description, createdAt, favoritesCount, tagList, body, favorited } = location.state
+  const { article } = useSelector((state) => state.posts)
+  const { author, title, description, createdAt, favoritesCount, tagList, body, favorited } = article
+
+  console.log(title, 'favorited')
+  console.log(description, 'description')
   const navigate = useNavigate()
   const { slug } = useParams()
   const dispatch = useDispatch()

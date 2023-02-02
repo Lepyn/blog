@@ -7,6 +7,7 @@ import {
   editOwnArticle,
   // sendLikeForArticle,
   // removeLikeForArticle,
+  getLikeArticle,
 } from '../../services/arcticleServise'
 // import { getUserRegistration } from '../../services/userServise'
 
@@ -48,18 +49,7 @@ export const fetchEditOwnArticle = createAsyncThunk('articles/fetchEditOwnArticl
 })
 
 export const fetchLikeArticle = createAsyncThunk('articles/fetchLikeArticle', async (slug, { rejectWithValue }) => {
-  const token = localStorage.getItem('token')
-  const response = await fetch(`https://blog.kata.academy/api/articles/${slug[1]}/favorite`, {
-    method: !slug[0] ? 'POST' : 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    },
-  })
-  if (!response.ok) {
-    return rejectWithValue('Лайк не поставлен')
-  }
-  return await response.json()
+  return getLikeArticle(slug, rejectWithValue)
 })
 
 const getpostSlice = createSlice({
@@ -88,7 +78,7 @@ const getpostSlice = createSlice({
     error: null,
     offset: 0,
     currentPage: 1,
-    slug: '',
+    // slug: '',
     newPost: [],
     sendPost: false,
     deletePost: false,
@@ -96,6 +86,8 @@ const getpostSlice = createSlice({
     currentArticle: null,
     favorited: false,
     likeCount: 0,
+    like: false,
+
     // newEditPost: {
     //   title: '',
     //   description: '',
@@ -114,6 +106,10 @@ const getpostSlice = createSlice({
     },
     updatePageAfterDel: (state) => {
       state.deletePost = false
+    },
+    toggleLike: (state) => {
+      state.like = !state.like
+      state.count = state.like ? state.count + 1 : state.count - 1
     },
     // updateArticle: (state, { payload }) => {
     //   const updatedArticle = payload
@@ -143,20 +139,21 @@ const getpostSlice = createSlice({
     [fetchArticles.fulfilled]: (state, { payload }) => {
       state.status = 'Resolved'
       state.posts = payload
+      state.articlesCount = payload
       state.sendPost = false
     },
     [fetchArticles.rejected]: (state, { payload }) => {
       state.status = 'Error'
       state.error = payload
     },
-    [fetchFullArticle.pending]: (state, { payload }) => {
+    [fetchFullArticle.pending]: (state, action) => {
       state.status = 'Loading'
       state.error = null
+      state.article = action.payload.article
     },
     [fetchFullArticle.fulfilled]: (state, { payload }) => {
       state.status = 'Resolved'
-      state.favorited = payload
-      state.favoritesCount = payload
+      state.posts.article = payload.article
     },
     [fetchGetNewArticle.pending]: (state) => {
       state.status = 'Loading'
@@ -200,6 +197,7 @@ const getpostSlice = createSlice({
     [fetchLikeArticle.pending]: (state) => {
       state.status = true
       // state.likeCount = false
+      state.error = null
       // state.posts.favorited = false
     },
     [fetchLikeArticle.fulfilled]: (state, { payload }) => {
@@ -220,6 +218,7 @@ const getpostSlice = createSlice({
     [fetchEditOwnArticle.fulfilled]: (state, { payload }) => {
       state.status = false
       state.editPost = true
+      state.slug = payload
     },
     [fetchEditOwnArticle.rejected]: (state, action) => {
       state.status = 'Error'
@@ -227,7 +226,7 @@ const getpostSlice = createSlice({
     },
   },
 })
-export const { updateOffset, updatePage, updateSlug, updatePageAfterDel, updateArticle, updatefavoriteRequest, updatefavoriteSuccess, updatefavoriteError } =
+export const { updateOffset, updatePage, updatePageAfterDel, updateArticle, updatefavoriteRequest, updatefavoriteSuccess, updatefavoriteError, toggleLike } =
   getpostSlice.actions
 
 export default getpostSlice.reducer

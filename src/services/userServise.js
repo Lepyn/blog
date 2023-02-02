@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 const _baseURL = 'https://blog.kata.academy/api'
-export const getUserRegistration = async (isValidData, rejectWithValue) => {
+export const getUserRegistration = async (isValidData) => {
   try {
     const response = await axios.post(`${_baseURL}/users`, isValidData)
     !localStorage.getItem('token') && localStorage.setItem('token', response.data.user.token)
@@ -30,7 +30,7 @@ export const getUserAuth = async (isLoginData, rejectWithValue) => {
   }
 }
 
-export const updateUserData = async (isLoginData, rejectWithValue) => {
+export const updateUserData = async (isLoginData, { rejectWithValue }) => {
   try {
     const token = localStorage.getItem('token')
     const headers = {
